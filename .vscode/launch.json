@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "request": "launch",
+            "name": "Deno: launch",
+            "type": "node",
+            "cwd": "${workspaceFolder}",
+            "env": {},
+            "runtimeExecutable": "/opt/homebrew/bin/deno",
+            "runtimeArgs": [
+                "run",
+                "--inspect-wait",
+                "--unstable-kv",
+                "--allow-all",
+                "${file}"
+            ],
+            "attachSimplePort": 9229,
+            "outputCapture": "std"
+        }
+    ]
+}

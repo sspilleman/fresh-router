@@ -3,10 +3,7 @@ import { kv } from "$connections/kv.ts";
 import { type AuthorizeResponse, type SearchResponse } from "./interfaces.ts";
 
 console.log("object", Deno.env.toObject());
-console.log("version", Deno.version);
 console.log("build", Deno.build);
-console.log("os release", Deno.osRelease());
-console.log("os uptime", Deno.osUptime());
 const { CLIENT_ID, CLIENT_SECRET } = Deno.env.toObject();
 console.log({ CLIENT_ID, CLIENT_SECRET });
 
@@ -137,6 +134,9 @@ export const search = async () => {
     if (r.ok) {
         const json: SearchResponse = await r.json();
         return json;
+    } else {
+        console.log(r);
+        return undefined;
     }
 };
 

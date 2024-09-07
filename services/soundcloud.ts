@@ -2,12 +2,12 @@ import { encodeBase64 } from "./base64.ts";
 import { kv } from "$connections/kv.ts";
 import { type AuthorizeResponse, type SearchResponse } from "./interfaces.ts";
 
+console.log(Deno.env.toObject());
 console.log(Deno.version);
 console.log(Deno.build);
 console.log(Deno.osRelease());
 console.log(Deno.osUptime());
 console.log(Deno.version);
-console.log(Deno.env.toObject());
 const { CLIENT_ID, CLIENT_SECRET } = Deno.env.toObject();
 console.log({ CLIENT_ID, CLIENT_SECRET });
 

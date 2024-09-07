@@ -4,7 +4,7 @@ import { kv } from "$connections/kv.ts";
 
 export const handler: Handlers = {
     async GET(_req: Request, _ctx: FreshContext): Promise<Response> {
-        const existing = await kv.get<HeadersInit>(["soundcloud", "search"]);
+        const existing = await kv.get(["soundcloud", "search"]);
         if (existing.value) {
             console.log("existing search");
             return new Response(JSON.stringify(existing.value), {
@@ -13,8 +13,8 @@ export const handler: Handlers = {
             });
         }
         const tracks = await search();
-        console.log("tracks", tracks?.collection.length);
         await kv.set(["soundcloud", "search"], tracks?.collection);
+        console.log("tracks", tracks?.collection.length);
         return new Response(JSON.stringify(tracks?.collection), {
             status: 200,
             headers: { "Content-Type": "application/json" },

@@ -1,11 +1,15 @@
 import { encodeBase64 } from "./base64.ts";
+import { kv } from "$connections/kv.ts";
 import { type AuthorizeResponse, type SearchResponse } from "./interfaces.ts";
 
-const CLIENT_ID = Deno.env.get("CLIENT_ID") as string;
-const CLIENT_SECRET = Deno.env.get("CLIENT_SECRET") as string;
+console.log(Deno.version);
+console.log(Deno.build);
+console.log(Deno.osRelease());
+console.log(Deno.osUptime());
+console.log(Deno.version);
 console.log(Deno.env.toObject());
+const { CLIENT_ID, CLIENT_SECRET } = Deno.env.toObject();
 console.log({ CLIENT_ID, CLIENT_SECRET });
-const kv = await Deno.openKv();
 
 export const getHeaders = async () => {
     let found = false;

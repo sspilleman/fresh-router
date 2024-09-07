@@ -14,10 +14,13 @@ export const handler: Handlers = {
         // }
         const tracks = await search();
         // await kv.set(["soundcloud", "search"], tracks?.collection);
-        console.log("tracks", tracks?.collection.length);
-        return new Response(JSON.stringify(tracks?.collection || []), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-        });
+        if (tracks?.collection.length) {
+            return new Response(JSON.stringify(tracks?.collection || []), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            });
+        } else {
+            return new Response("error", { status: 403 });
+        }
     },
 };

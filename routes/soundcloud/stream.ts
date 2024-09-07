@@ -6,9 +6,13 @@ export const handler: Handlers = {
         const requestUrl = new URL(req.url);
         const url = requestUrl.searchParams.get("url") as string;
         const link = await stream(url);
-        return new Response(JSON.stringify({ url: link }), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-        });
+        if (link) {
+            return new Response(JSON.stringify({ url: link }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            });
+        } else {
+            return new Response("error", { status: 403 });
+        }
     },
 };

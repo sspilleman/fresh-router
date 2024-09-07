@@ -144,4 +144,8 @@ export const stream = async (url: string) => {
     const headers = await getHeaders();
     const r = await fetch(url, { method: "GET", headers });
     if (r.ok) return r.url;
+    else {
+        console.log(r);
+        return undefined;
+    }
 };

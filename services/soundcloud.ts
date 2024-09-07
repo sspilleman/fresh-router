@@ -4,6 +4,7 @@ import { type AuthorizeResponse, type SearchResponse } from "./interfaces.ts";
 
 const kvkeys = {
     headers: ["soundcloud", "headers"],
+    expires_in: ["soundcloud", "expires_in"],
     refresh_token: ["soundcloud", "refresh_token"],
 };
 
@@ -14,7 +15,13 @@ console.log({ CLIENT_ID, CLIENT_SECRET });
 
 export const getHeaders = async () => {
     let found = false;
+    let expired = false;
+    const now = new Date().getTime();
     if (!found) {
+        const existing = await kv.get<number>(kvkeys.expires_in);
+        if (existing.value && existing.value < now) expired = true;
+    }
+    if (!expired) {
         // Get existing headers
         const existing = await kv.get<HeadersInit>(kvkeys.headers);
         if (existing.value) {
@@ -34,13 +41,14 @@ export const getHeaders = async () => {
                     existing.value,
                 );
             if (access_token) {
-                const expireIn = 1000 * Math.ceil(expires_in / 2);
+                const expireIn = now + (1000 * Math.ceil(expires_in / 2));
                 const headers: HeadersInit = {
                     accept: "application/json; charset=utf-8",
                     Authorization: `${token_type} ${access_token}`,
                 };
-                await kv.set(kvkeys.headers, headers, { expireIn });
+                await kv.set(kvkeys.headers, headers);
                 await kv.set(kvkeys.refresh_token, refresh_token);
+                await kv.set(kvkeys.expires_in, expireIn);
                 found = true;
                 console.log("refresh");
                 return headers;
@@ -55,13 +63,14 @@ export const getHeaders = async () => {
                 CLIENT_SECRET,
             );
         if (access_token) {
-            const expireIn = 1000 * Math.ceil(expires_in / 2);
+            const expireIn = now + (1000 * Math.ceil(expires_in / 2));
             const headers: HeadersInit = {
                 accept: "application/json; charset=utf-8",
                 Authorization: `${token_type} ${access_token}`,
             };
-            await kv.set(kvkeys.headers, headers, { expireIn });
+            await kv.set(kvkeys.headers, headers);
             await kv.set(kvkeys.refresh_token, refresh_token);
+            await kv.set(kvkeys.expires_in, expireIn);
             found = true;
             console.log("new");
             return headers;

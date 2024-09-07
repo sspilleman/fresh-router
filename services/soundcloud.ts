@@ -14,39 +14,39 @@ console.log({ CLIENT_ID, CLIENT_SECRET });
 
 export const getHeaders = async () => {
     let found = false;
-    // if (!found) {
-    //     // Get existing headers
-    //     const existing = await kv.get<HeadersInit>(kvkeys.headers);
-    //     if (existing.value) {
-    //         found = true;
-    //         console.log("existing");
-    //         return existing.value;
-    //     }
-    // }
-    // if (!found) {
-    //     // Get by refresh token
-    //     const existing = await kv.get<string>(kvkeys.refresh_token);
-    //     if (existing.value) {
-    //         const { token_type, access_token, refresh_token, expires_in } =
-    //             await refresh(
-    //                 CLIENT_ID,
-    //                 CLIENT_SECRET,
-    //                 existing.value,
-    //             );
-    //         if (access_token) {
-    //             const expireIn = 1000 * Math.ceil(expires_in / 2);
-    //             const headers: HeadersInit = {
-    //                 accept: "application/json; charset=utf-8",
-    //                 Authorization: `${token_type} ${access_token}`,
-    //             };
-    //             await kv.set(kvkeys.headers, headers, { expireIn });
-    //             await kv.set(kvkeys.refresh_token, refresh_token);
-    //             found = true;
-    //             console.log("refresh");
-    //             return headers;
-    //         }
-    //     }
-    // }
+    if (!found) {
+        // Get existing headers
+        const existing = await kv.get<HeadersInit>(kvkeys.headers);
+        if (existing.value) {
+            found = true;
+            console.log("existing");
+            return existing.value;
+        }
+    }
+    if (!found) {
+        // Get by refresh token
+        const existing = await kv.get<string>(kvkeys.refresh_token);
+        if (existing.value) {
+            const { token_type, access_token, refresh_token, expires_in } =
+                await refresh(
+                    CLIENT_ID,
+                    CLIENT_SECRET,
+                    existing.value,
+                );
+            if (access_token) {
+                const expireIn = 1000 * Math.ceil(expires_in / 2);
+                const headers: HeadersInit = {
+                    accept: "application/json; charset=utf-8",
+                    Authorization: `${token_type} ${access_token}`,
+                };
+                await kv.set(kvkeys.headers, headers, { expireIn });
+                await kv.set(kvkeys.refresh_token, refresh_token);
+                found = true;
+                console.log("refresh");
+                return headers;
+            }
+        }
+    }
     if (!found) {
         // Get new tokens
         const { token_type, access_token, refresh_token, expires_in } =

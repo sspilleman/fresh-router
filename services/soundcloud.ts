@@ -29,7 +29,7 @@ export const getHeaders = async () => {
                 refresh_token.value,
             );
             if (access_token) {
-                const expireIn = 1000 * expires_in;
+                const expireIn = 1000 * Math.ceil(expires_in / 2);
                 const headers: HeadersInit = {
                     accept: "application/json; charset=utf-8",
                     Authorization: `${token_type} ${access_token}`,
@@ -49,7 +49,7 @@ export const getHeaders = async () => {
                 CLIENT_SECRET,
             );
         if (access_token) {
-            const expireIn = 1000 * expires_in;
+            const expireIn = 1000 * Math.ceil(expires_in / 2);
             const headers: HeadersInit = {
                 accept: "application/json; charset=utf-8",
                 Authorization: `${token_type} ${access_token}`,

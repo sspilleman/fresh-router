@@ -12,8 +12,8 @@ export const getHeaders = async () => {
     if (!found) {
         const headers = await kv.get<HeadersInit>(["soundcloud", "headers"]);
         if (headers.value) {
-            console.log("existing");
             found = true;
+            console.log("existing");
             return headers.value;
         }
     }
@@ -23,18 +23,18 @@ export const getHeaders = async () => {
             "refresh_token",
         ]);
         if (refresh_token.value) {
-            const { token_type, access_token, expires_in } = await refresh(
+            const { token_type, access_token } = await refresh(
                 CLIENT_ID,
                 CLIENT_SECRET,
                 refresh_token.value,
             );
             if (access_token) {
-                const expireIn = 1000 * Math.ceil(expires_in / 2);
+                // const expireIn = 1000 * Math.ceil(expires_in / 2);
                 const headers: HeadersInit = {
                     accept: "application/json; charset=utf-8",
                     Authorization: `${token_type} ${access_token}`,
                 };
-                kv.set(["soundcloud", "headers"], headers, { expireIn });
+                kv.set(["soundcloud", "headers"], headers, { expireIn: 1200 });
                 kv.set(["soundcloud", "refresh_token"], refresh_token);
                 found = true;
                 console.log("refresh");
@@ -43,18 +43,17 @@ export const getHeaders = async () => {
         }
     }
     if (!found) {
-        const { token_type, access_token, expires_in, refresh_token } =
-            await authorize(
-                CLIENT_ID,
-                CLIENT_SECRET,
-            );
+        const { token_type, access_token, refresh_token } = await authorize(
+            CLIENT_ID,
+            CLIENT_SECRET,
+        );
         if (access_token) {
-            const expireIn = 1000 * Math.ceil(expires_in / 2);
+            // const expireIn = 1000 * Math.ceil(expires_in / 2);
             const headers: HeadersInit = {
                 accept: "application/json; charset=utf-8",
                 Authorization: `${token_type} ${access_token}`,
             };
-            kv.set(["soundcloud", "headers"], headers, { expireIn });
+            kv.set(["soundcloud", "headers"], headers, { expireIn: 1200 });
             kv.set(["soundcloud", "refresh_token"], refresh_token);
             found = true;
             console.log("new");

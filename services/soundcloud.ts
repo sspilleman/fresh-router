@@ -15,12 +15,9 @@ console.log({ CLIENT_ID, CLIENT_SECRET });
 
 export const getHeaders = async () => {
     let found = false;
-    let expired = false;
     const now = new Date().getTime();
-    if (!found) {
-        const existing = await kv.get<number>(kvkeys.expires_in);
-        if (existing.value && existing.value < now) expired = true;
-    }
+    const expiry_date = await kv.get<number>(kvkeys.expires_in);
+    const expired = expiry_date.value ? expiry_date.value < now : true;
     if (!expired) {
         // Get existing headers
         const existing = await kv.get<HeadersInit>(kvkeys.headers);

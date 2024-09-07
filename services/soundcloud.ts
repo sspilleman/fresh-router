@@ -2,59 +2,66 @@ import { encodeBase64 } from "./base64.ts";
 import { kv } from "$connections/kv.ts";
 import { type AuthorizeResponse, type SearchResponse } from "./interfaces.ts";
 
-console.log("object", Deno.env.toObject());
-console.log("build", Deno.build);
+const kvkeys = {
+    headers: ["soundcloud", "headers"],
+    refresh_token: ["soundcloud", "refresh_token"],
+};
+
+// console.log("object", Deno.env.toObject());
+// console.log("build", Deno.build);
 const { CLIENT_ID, CLIENT_SECRET } = Deno.env.toObject();
 console.log({ CLIENT_ID, CLIENT_SECRET });
 
 export const getHeaders = async () => {
     let found = false;
+    // if (!found) {
+    //     // Get existing headers
+    //     const existing = await kv.get<HeadersInit>(kvkeys.headers);
+    //     if (existing.value) {
+    //         found = true;
+    //         console.log("existing");
+    //         return existing.value;
+    //     }
+    // }
+    // if (!found) {
+    //     // Get by refresh token
+    //     const existing = await kv.get<string>(kvkeys.refresh_token);
+    //     if (existing.value) {
+    //         const { token_type, access_token, refresh_token, expires_in } =
+    //             await refresh(
+    //                 CLIENT_ID,
+    //                 CLIENT_SECRET,
+    //                 existing.value,
+    //             );
+    //         if (access_token) {
+    //             const expireIn = 1000 * Math.ceil(expires_in / 2);
+    //             const headers: HeadersInit = {
+    //                 accept: "application/json; charset=utf-8",
+    //                 Authorization: `${token_type} ${access_token}`,
+    //             };
+    //             await kv.set(kvkeys.headers, headers, { expireIn });
+    //             await kv.set(kvkeys.refresh_token, refresh_token);
+    //             found = true;
+    //             console.log("refresh");
+    //             return headers;
+    //         }
+    //     }
+    // }
     if (!found) {
-        const headers = await kv.get<HeadersInit>(["soundcloud", "headers"]);
-        if (headers.value) {
-            found = true;
-            console.log("existing");
-            return headers.value;
-        }
-    }
-    if (!found) {
-        const refresh_token = await kv.get<string>([
-            "soundcloud",
-            "refresh_token",
-        ]);
-        if (refresh_token.value) {
-            const { token_type, access_token } = await refresh(
+        // Get new tokens
+        const { token_type, access_token, refresh_token, expires_in } =
+            await authorize(
                 CLIENT_ID,
                 CLIENT_SECRET,
-                refresh_token.value,
             );
-            if (access_token) {
-                // const expireIn = 1000 * Math.ceil(expires_in / 2);
-                const headers: HeadersInit = {
-                    accept: "application/json; charset=utf-8",
-                    Authorization: `${token_type} ${access_token}`,
-                };
-                kv.set(["soundcloud", "headers"], headers, { expireIn: 1200 });
-                kv.set(["soundcloud", "refresh_token"], refresh_token);
-                found = true;
-                console.log("refresh");
-                return headers;
-            }
-        }
-    }
-    if (!found) {
-        const { token_type, access_token, refresh_token } = await authorize(
-            CLIENT_ID,
-            CLIENT_SECRET,
-        );
         if (access_token) {
-            // const expireIn = 1000 * Math.ceil(expires_in / 2);
+            const expireIn = 1000 * Math.ceil(expires_in / 2);
             const headers: HeadersInit = {
                 accept: "application/json; charset=utf-8",
                 Authorization: `${token_type} ${access_token}`,
             };
-            kv.set(["soundcloud", "headers"], headers, { expireIn: 1200 });
-            kv.set(["soundcloud", "refresh_token"], refresh_token);
+            await kv.set(kvkeys.headers, headers, { expireIn });
+            await kv.set(kvkeys.refresh_token, refresh_token);
             found = true;
             console.log("new");
             return headers;
@@ -84,8 +91,10 @@ export const authorize = async (
     if (r.ok) {
         const json: AuthorizeResponse = await r.json();
         return json;
+    } else {
+        console.log(r);
+        return {} as AuthorizeResponse;
     }
-    return {} as AuthorizeResponse;
 };
 
 export const refresh = async (
@@ -112,8 +121,10 @@ export const refresh = async (
     if (r.ok) {
         const json: AuthorizeResponse = await r.json();
         return json;
+    } else {
+        console.log(r);
+        return {} as AuthorizeResponse;
     }
-    return {} as AuthorizeResponse;
 };
 
 export const search = async () => {

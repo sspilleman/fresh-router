@@ -11,7 +11,7 @@ const kvkeys = {
 // console.log("object", Deno.env.toObject());
 // console.log("build", Deno.build);
 const { CLIENT_ID, CLIENT_SECRET } = Deno.env.toObject();
-console.log({ CLIENT_ID, CLIENT_SECRET });
+// console.log({ CLIENT_ID, CLIENT_SECRET });
 
 export const getHeaders = async () => {
     let found = false;
@@ -23,7 +23,7 @@ export const getHeaders = async () => {
         const existing = await kv.get<HeadersInit>(kvkeys.headers);
         if (existing.value) {
             found = true;
-            console.log("existing");
+            // console.log("existing");
             return existing.value;
         }
     }
@@ -47,7 +47,7 @@ export const getHeaders = async () => {
                 await kv.set(kvkeys.refresh_token, refresh_token);
                 await kv.set(kvkeys.expires_in, expireIn);
                 found = true;
-                console.log("refresh");
+                // console.log("refresh");
                 return headers;
             }
         }
@@ -69,7 +69,7 @@ export const getHeaders = async () => {
             await kv.set(kvkeys.refresh_token, refresh_token);
             await kv.set(kvkeys.expires_in, expireIn);
             found = true;
-            console.log("new");
+            // console.log("new");
             return headers;
         }
     }
@@ -136,7 +136,7 @@ export const refresh = async (
 export const search = async () => {
     const headers = await getHeaders();
     const params = new URLSearchParams();
-    params.set("q", "popov");
+    params.set("q", "Tytanium Sessions");
     params.set("order", "hotness");
     params.set("genres", "Trance,trance,TRANCE");
     params.set("access", "playable");

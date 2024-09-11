@@ -18,9 +18,9 @@ export const playlists = async (
     }
 };
 
-const response = await playlists("229737");
+// const response = await playlists("229737");
 // console.log(response);
-await Deno.writeTextFile(
-    "./services/soundcloud/users_playlists.json",
-    JSON.stringify(response, undefined, "  "),
-);
+// await Deno.writeTextFile(
+//     "./services/soundcloud/users_playlists.json",
+//     JSON.stringify(response, undefined, "  "),
+// );

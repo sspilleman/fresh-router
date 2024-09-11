@@ -5,6 +5,7 @@ import {
     translateCode as tc,
     type TranslateResponse,
 } from "$services/language.ts";
+import { Json } from "$services/http.ts";
 
 export const handler: Handlers = {
     async POST(req: Request, _ctx: FreshContext): Promise<Response> {
@@ -21,10 +22,7 @@ export const handler: Handlers = {
         } else {
             response[tc(dst)] = await translate(src, dst, q);
         }
-        return new Response(JSON.stringify(response), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-        });
+        return new Response(JSON.stringify(response), Json);
     },
 };
 

@@ -8,7 +8,7 @@ import * as $_middleware from "./routes/_middleware.ts";
 import * as $index from "./routes/index.tsx";
 import * as $language_translate from "./routes/language/translate.ts";
 import * as $soundcloud_search from "./routes/soundcloud/search.ts";
-import * as $soundcloud_stream from "./routes/soundcloud/stream.ts";
+import * as $soundcloud_streams from "./routes/soundcloud/streams.ts";
 
 import { type Manifest } from "$fresh/server.ts";
 
@@ -20,7 +20,7 @@ const manifest = {
     "./routes/index.tsx": $index,
     "./routes/language/translate.ts": $language_translate,
     "./routes/soundcloud/search.ts": $soundcloud_search,
-    "./routes/soundcloud/stream.ts": $soundcloud_stream,
+    "./routes/soundcloud/streams.ts": $soundcloud_streams,
   },
   islands: {},
   baseUrl: import.meta.url,

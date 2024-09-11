@@ -1,6 +1,6 @@
-import { encodeBase64 } from "./base64.ts";
+import { encodeBase64 } from "$services/base64.ts";
 import { kv } from "$connections/kv.ts";
-import { type AuthorizeResponse, type SearchResponse } from "./interfaces.ts";
+import type { AuthorizeResponse } from "./interfaces.ts";
 
 const kvkeys = {
     headers: ["soundcloud", "headers"],
@@ -8,10 +8,17 @@ const kvkeys = {
     refresh_token: ["soundcloud", "refresh_token"],
 };
 
-// console.log("object", Deno.env.toObject());
-// console.log("build", Deno.build);
 const { CLIENT_ID, CLIENT_SECRET } = Deno.env.toObject();
-// console.log({ CLIENT_ID, CLIENT_SECRET });
+
+export const stream = async (url: string) => {
+    const headers = await getHeaders();
+    const r = await fetch(url, { method: "GET", headers });
+    if (r.ok) return r.url;
+    else {
+        console.log(r);
+        return undefined;
+    }
+};
 
 export const getHeaders = async () => {
     let found = false;
@@ -23,7 +30,6 @@ export const getHeaders = async () => {
         const existing = await kv.get<HeadersInit>(kvkeys.headers);
         if (existing.value) {
             found = true;
-            // console.log("existing");
             return existing.value;
         }
     }
@@ -47,7 +53,6 @@ export const getHeaders = async () => {
                 await kv.set(kvkeys.refresh_token, refresh_token);
                 await kv.set(kvkeys.expires_in, expireIn);
                 found = true;
-                // console.log("refresh");
                 return headers;
             }
         }
@@ -69,7 +74,6 @@ export const getHeaders = async () => {
             await kv.set(kvkeys.refresh_token, refresh_token);
             await kv.set(kvkeys.expires_in, expireIn);
             found = true;
-            // console.log("new");
             return headers;
         }
     }
@@ -130,38 +134,5 @@ export const refresh = async (
     } else {
         console.log(r);
         return {} as AuthorizeResponse;
-    }
-};
-
-export const search = async () => {
-    const headers = await getHeaders();
-    const params = new URLSearchParams();
-    params.set("q", "Tytanium Sessions");
-    params.set("order", "hotness");
-    params.set("genres", "Trance,trance,TRANCE");
-    params.set("access", "playable");
-    params.set("limit", "100");
-    params.set("linked_partitioning", "true");
-    params.set("duration[from]", `${1200 * 1000}`);
-    const r = await fetch(
-        `https://api.soundcloud.com/tracks?${params.toString()}`,
-        { method: "GET", headers },
-    );
-    if (r.ok) {
-        const json: SearchResponse = await r.json();
-        return json;
-    } else {
-        console.log(r);
-        return undefined;
-    }
-};
-
-export const stream = async (url: string) => {
-    const headers = await getHeaders();
-    const r = await fetch(url, { method: "GET", headers });
-    if (r.ok) return r.url;
-    else {
-        console.log(r);
-        return undefined;
     }
 };

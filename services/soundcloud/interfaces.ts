@@ -6,6 +6,12 @@ export interface AuthorizeResponse {
     scope: string;
 }
 
+export interface TracksStreamsResponse {
+    http_mp3_128_url: string;
+    hls_mp3_128_url: string;
+    preview_mp3_128_url: string;
+}
+
 interface User {
     avatar_url: string;
     city: string | null;

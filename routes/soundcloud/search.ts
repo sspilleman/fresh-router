@@ -1,26 +1,17 @@
 import { FreshContext, Handlers } from "$fresh/server.ts";
-import { search } from "$services/soundcloud.ts";
-// import { kv } from "$connections/kv.ts";
+import { tracks } from "$services/soundcloud/search.ts";
+import { Json, NotFound } from "$services/http.ts";
 
 export const handler: Handlers = {
     async GET(_req: Request, _ctx: FreshContext): Promise<Response> {
-        // const existing = await kv.get(["soundcloud", "search"]);
-        // if (existing.value) {
-        //     console.log("existing search");
-        //     return new Response(JSON.stringify(existing.value), {
-        //         status: 200,
-        //         headers: { "Content-Type": "application/json" },
-        //     });
-        // }
-        const tracks = await search();
-        // await kv.set(["soundcloud", "search"], tracks?.collection);
-        if (tracks?.collection.length) {
-            return new Response(JSON.stringify(tracks?.collection || []), {
-                status: 200,
-                headers: { "Content-Type": "application/json" },
-            });
+        const response = await tracks();
+        if (response?.collection.length) {
+            return new Response(
+                JSON.stringify(response?.collection || []),
+                Json,
+            );
         } else {
-            return new Response("error", { status: 403 });
+            return new Response(NotFound.text, NotFound);
         }
     },
 };

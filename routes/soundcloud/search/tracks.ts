@@ -15,3 +15,5 @@ export const handler: Handlers = {
         }
     },
 };
+
+// curl http://localhost:8001/soundcloud/search/tracks

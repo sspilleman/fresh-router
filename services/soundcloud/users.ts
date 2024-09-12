@@ -1,10 +1,10 @@
 import { getHeaders } from "$services/soundcloud/oauth.ts";
 import { base } from "$services/soundcloud/const.ts";
-import type { TracksStreamsResponse } from "$services/soundcloud/interfaces.ts";
+import type { Playlist } from "$services/soundcloud/interfaces.ts";
 
 export const playlists = async (
     user_id: string,
-): Promise<TracksStreamsResponse | undefined> => {
+): Promise<Playlist[] | undefined> => {
     const headers = await getHeaders();
     const r = await fetch(`${base}/users/${user_id}/playlists`, {
         method: "GET",

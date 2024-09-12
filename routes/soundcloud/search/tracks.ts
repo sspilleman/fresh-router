@@ -3,8 +3,12 @@ import { tracks } from "$services/soundcloud/search.ts";
 import { Json, NotFound } from "$services/http.ts";
 
 export const handler: Handlers = {
-    async GET(_req: Request, _ctx: FreshContext): Promise<Response> {
-        const response = await tracks();
+    async POST(req: Request, _ctx: FreshContext): Promise<Response> {
+        const params = new URLSearchParams(await req.json());
+        // params.delete("q");
+        params.set("linked_partitioning", "true");
+        params.set("access", "playable");
+        const response = await tracks(params);
         if (response?.collection.length) {
             return new Response(
                 JSON.stringify(response?.collection || []),
@@ -15,5 +19,8 @@ export const handler: Handlers = {
         }
     },
 };
+
+// const params = new URLSearchParams(obj);
+// console.log(params.toString());
 
 // curl http://localhost:8001/soundcloud/search/tracks

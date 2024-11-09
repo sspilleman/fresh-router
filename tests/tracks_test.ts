@@ -9,7 +9,7 @@ import {
   assertGreater,
   assertMatch,
 } from "jsr:@std/assert";
-import { related, streams } from "$services/soundcloud/tracks.ts";
+import { get, related, streams } from "$services/soundcloud/tracks.ts";
 import { load } from "jsr:@std/dotenv";
 
 const CONN_INFO: ServeHandlerInfo = {
@@ -19,7 +19,7 @@ const CONN_INFO: ServeHandlerInfo = {
 Deno.test("TRACKS test", async (t) => {
   await load({ envPath: "./.env", export: true });
   const { CLIENT_ID, CLIENT_SECRET } = Deno.env.toObject();
-  if(!CLIENT_ID) console.log({ CLIENT_ID, CLIENT_SECRET });
+  if (!CLIENT_ID) console.log({ CLIENT_ID, CLIENT_SECRET });
 
   const handler = await createHandler(manifest, config);
 
@@ -65,5 +65,24 @@ Deno.test("TRACKS test", async (t) => {
     const _related = await related("83957632");
     assertExists(_related);
     assertGreater(_related.length, 0);
+  });
+
+  await t.step("#5 get: HTTP", async () => {
+    const resp = await handler(
+      new Request(
+        "http://127.0.0.1/soundcloud/tracks/get?track_id=83957632",
+      ),
+      CONN_INFO,
+    );
+    assertEquals(resp.status, 200);
+    const json = await resp.json();
+    assertExists(json);
+    assertEquals(json.title, "Sean Tyas pres. Tytanium Sessions Episode 072");
+  });
+
+  await t.step("#6 get: BACKEND", async () => {
+    const _track = await get("83957632");
+    assertExists(_track);
+    assertEquals(_track.title, "Sean Tyas pres. Tytanium Sessions Episode 072");
   });
 });

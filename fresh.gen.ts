@@ -8,6 +8,7 @@ import * as $_middleware from "./routes/_middleware.ts";
 import * as $index from "./routes/index.tsx";
 import * as $language_translate from "./routes/language/translate.ts";
 import * as $soundcloud_search_tracks from "./routes/soundcloud/search/tracks.ts";
+import * as $soundcloud_tracks_get from "./routes/soundcloud/tracks/get.ts";
 import * as $soundcloud_tracks_related from "./routes/soundcloud/tracks/related.ts";
 import * as $soundcloud_tracks_streams from "./routes/soundcloud/tracks/streams.ts";
 import * as $soundcloud_users_playlists from "./routes/soundcloud/users/playlists.ts";
@@ -22,6 +23,7 @@ const manifest = {
     "./routes/index.tsx": $index,
     "./routes/language/translate.ts": $language_translate,
     "./routes/soundcloud/search/tracks.ts": $soundcloud_search_tracks,
+    "./routes/soundcloud/tracks/get.ts": $soundcloud_tracks_get,
     "./routes/soundcloud/tracks/related.ts": $soundcloud_tracks_related,
     "./routes/soundcloud/tracks/streams.ts": $soundcloud_tracks_streams,
     "./routes/soundcloud/users/playlists.ts": $soundcloud_users_playlists,

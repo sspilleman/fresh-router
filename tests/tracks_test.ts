@@ -14,6 +14,7 @@ import { load } from "jsr:@std/dotenv";
 
 const CONN_INFO: ServeHandlerInfo = {
   remoteAddr: { hostname: "127.0.0.1", port: 53496, transport: "tcp" },
+  completed: new Promise((r) => r(undefined)) as Promise<void>,
 };
 
 Deno.test("TRACKS test", async (t) => {

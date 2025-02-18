@@ -7,6 +7,7 @@ import { load } from "jsr:@std/dotenv";
 
 const CONN_INFO: ServeHandlerInfo = {
   remoteAddr: { hostname: "127.0.0.1", port: 53496, transport: "tcp" },
+  completed: new Promise((r) => r()),
 };
 
 const searchObj = {
@@ -20,7 +21,6 @@ Deno.test("SEARCH test", async (t) => {
   await load({ envPath: "./.env", export: true });
   const { CLIENT_ID, CLIENT_SECRET } = Deno.env.toObject();
   if (!CLIENT_ID) console.log({ CLIENT_ID, CLIENT_SECRET });
-
   const handler = await createHandler(manifest, config);
 
   await t.step("#1 search: HTTP", async () => {

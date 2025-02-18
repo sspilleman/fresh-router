@@ -13,7 +13,7 @@ import * as $soundcloud_tracks_related from "./routes/soundcloud/tracks/related.
 import * as $soundcloud_tracks_streams from "./routes/soundcloud/tracks/streams.ts";
 import * as $soundcloud_users_playlists from "./routes/soundcloud/users/playlists.ts";
 
-import { type Manifest } from "$fresh/server.ts";
+import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
   routes: {

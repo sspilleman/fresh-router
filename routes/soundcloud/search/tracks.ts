@@ -7,7 +7,7 @@ export const handler: Handlers = {
     const params = new URLSearchParams(await req.json());
     // console.log(params);
     // params.delete("q");
-    // params.set("linked_partitioning", "true");
+    params.set("linked_partitioning", "true");
     // params.set("access", "playable");
     const response = await tracks(params);
     // console.log(response);
